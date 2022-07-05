@@ -21,7 +21,7 @@ class Cookies:
             selected = None
             while type(selected) is not int or not 0 <= selected < len(os.listdir(self.cookies_dir)):
                 try:
-                    selection = input("Please select an integer representing a cookie::")
+                    selection = 0
                     selected = int(selection)
                 except ValueError:
                     if selection == "a":

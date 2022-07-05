@@ -1,5 +1,9 @@
 # This class will be in charge of uploading videos onto tiktok.
+from ast import Break
 import os, time
+from unicodedata import name
+
+import py
 from Bot import Bot
 import utils
 from Browser import Browser
@@ -7,7 +11,12 @@ from Cookies import Cookies
 from IO import IO
 from Video import Video
 from selenium.common.exceptions import StaleElementReferenceException
-
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common
+import pyautogui
+list = []
 PROTECTED_FILES = ["processed.mp4", "VideosSaveHere.txt"]
 
 class Upload:
@@ -137,36 +146,48 @@ class Upload:
         if self.bot is None:
             self.bot = Browser().getBot()
             self.webbot = Bot(self.bot)
+            pass
         self.bot.get(self.url)
         utils.randomTimeQuery()
         self.cookies = Cookies(self.bot)
         self.bot.refresh()
+        time.sleep(10)
+        WebDriverWait(self.bot, 10).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
+        self.bot.switch_to.frame(0)
+        self.bot.implicitly_wait(1)
+        file_uploader = self.bot.find_elements(By.CLASS_NAME, "css-14w2a8u")[0].click()
 
-        try:
-            file_input_element = self.webbot.getVideoUploadInput()
-        except Exception as e:
-            print(f"Error: {e}")
-            print("Major error, cannot find the file upload button, please update getVideoUploadInput() in Bot.py")
-            file_input_element = None
-            exit()
-        abs_path = os.path.join(os.getcwd(), filename)
-        try:
-            file_input_element.send_keys(abs_path)
-        except StaleElementReferenceException as e:
-            try:
-                self.bot.implicitly_wait(5)
-                file_input_element = self.webbot.getVideoUploadInput()
-                file_input_element.send_keys(abs_path)
-            except Exception as e:
-                print("Major error, cannot find the file upload button, please update getVideoUploadInput() in Bot.py")
-                exit()
-
-
-        # We need to wait until it is uploaded and then clear input.
-
+        time.sleep(4)
+        word = ""
+        word1 = ""
+        for num in range(len(filename)):
+            if filename[num] == "\\":
+                list.append(num)
+        num = 0
+        while num!= list[-1]+1:
+            word = word + filename[num]
+            num+=1
+        print (word)
+        num = list[-1]+1
+        while num != len(filename):
+            word1 = word1 + filename[num]
+            num+=1
+        print (word1)
+        pyautogui.click(239, 61)
+        time.sleep(2)
+        pyautogui.write(word)
+        pyautogui.press('enter')
+        time.sleep(2)
+        pyautogui.click(891, 1020)
+        time.sleep(2)
+        #pyautogui.click(891, 1020)
+        pyautogui.write(word1)
+        pyautogui.press('enter')
+        time.sleep(10)
+        
         self.addCaptions()
         utils.randomTimeQuery()
-        if private:
+        if private == True:
             self.webbot.selectPrivateRadio()  # private video selection
             utils.randomTimeQuery()
         else:
@@ -175,7 +196,10 @@ class Upload:
             utils.randomTimeQuery()
             """
             pass
-        if not test:
-
+        if test == False:
             self.webbot.uploadButtonClick()  # upload button
-        input("Press any button to exit")
+        file_uploader = self.bot.find_elements(By.CLASS_NAME, "css-n99h88")[0].click()
+        time.sleep(15)
+        
+        # We need to wait until it is uploaded and then clear input.
+        self.bot.close()

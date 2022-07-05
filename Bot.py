@@ -15,7 +15,7 @@ class Bot:
         WebDriverWait(self.bot, 10).until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
         self.bot.switch_to.frame(0)
         self.bot.implicitly_wait(1)
-        file_input_element = self.bot.find_elements(By.CLASS_NAME, "upload-btn-input")[0]
+        file_input_element = self.bot.find_elements(By.CLASS_NAME, "css-n99h88")[0]
         # document.getElementsByClassName("op-part")[0].childNodes[1]  # New locator
         return file_input_element
 
@@ -73,8 +73,8 @@ class Bot:
         # Button Works
         try:
             """Newer layout."""
-            WebDriverWait(self.bot, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "op-part-v2")))
-            operation_elems = self.bot.find_elements(By.CLASS_NAME, "op-part-v2")[0]
+            WebDriverWait(self.bot, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "css-n99h88")))
+            operation_elems = self.bot.find_elements(By.CLASS_NAME, "css-n99h88")[0]
             upload_elem = operation_elems.find_elements(By.XPATH, './*')[1]
             upload_elem.click()
         except Exception as e:
